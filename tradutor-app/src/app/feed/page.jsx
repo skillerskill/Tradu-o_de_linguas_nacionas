@@ -2,24 +2,61 @@
 import { useState } from 'react';
 import styles from './Home.module.css';
 
+// Componente de Header
+function Header() {
+  return (
+    <header className={styles.header}>
+      <h1>Tradutor de Kikongo/Kimbundo para Português</h1>
+      <p>Traduza palavras e frases de Kikongo ou Kimbundo para Português e vice-versa.</p>
+    </header>
+  );
+}
+
 export default function Home() {
   const [inputText, setInputText] = useState('');
   const [selectedLanguage, setSelectedLanguage] = useState('kikongo');
   const [translatedText, setTranslatedText] = useState('');
   const [history, setHistory] = useState([]);
 
+  // Função simulada de tradução
+  const translateText = (text, language) => {
+    const translations = {
+      kikongo: {
+        'ola': 'Matondo',
+        'mundo': 'mundo',
+        // Adicione mais traduções de Kikongo para Português aqui
+      },
+      kimbundo: {
+        'ola': 'olá',
+        'mundo': 'mundo',
+        // Adicione mais traduções de Kimbundo para Português aqui
+      },
+      portugues: {
+        'olá': 'ola',
+        'mundo': 'mundo',
+        // Adicione mais traduções de Português para Kikongo/Kimbundo aqui
+      },
+    };
+
+    return translations[language][text.toLowerCase()] || `Tradução não encontrada para "${text}"`;
+  };
+
   const handleTranslate = () => {
-    // Aqui você pode integrar com o sistema de tradução real
-    const newTranslation = `${inputText} (tradução para ${selectedLanguage})`;
+    if (!inputText.trim()) {
+      alert('Por favor, insira um texto para traduzir.');
+      return;
+    }
+
+    const newTranslation = translateText(inputText, selectedLanguage);
     setTranslatedText(newTranslation);
 
     // Adiciona tradução ao histórico
-    setHistory([newTranslation, ...history]);
+    setHistory([`${inputText} → ${newTranslation} (${selectedLanguage})`, ...history]);
   };
 
   return (
     <div className={styles.container}>
-      <h1>Tradutor de Kikongo/Kimbundo</h1>
+      <Header />
 
       <input
         type="text"
@@ -34,9 +71,9 @@ export default function Home() {
         onChange={(e) => setSelectedLanguage(e.target.value)}
         className={styles.selectLanguage}
       >
-        <option value="kikongo">Kikongo</option>
-        <option value="kimbundo">Kimbundo</option>
-        <option value="portugues">Português</option>
+        <option value="kikongo">Kikongo para Português</option>
+        <option value="kimbundo">Kimbundo para Português</option>
+        <option value="portugues">Português para Kikongo/Kimbundo</option>
       </select>
 
       <button onClick={handleTranslate} className={styles.translateButton}>
